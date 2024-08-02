@@ -1,0 +1,27 @@
+services:
+  mongo:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb:/data/db
+  weather-backend:
+    image: node:latest
+    ports:
+      - "3000:3000"
+
+  nest:
+    build: .
+    container_name: nestjs
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongo
+    environment:
+      - DATABASE_URI=mongodb://mongo:27017/nest
+    volumes:
+      - .:/usr/src/app
+
+volumes:
+  mongodb:

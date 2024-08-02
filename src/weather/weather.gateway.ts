@@ -6,13 +6,15 @@ import {
 } from '@nestjs/websockets';
 
 import { WeatherDataDto } from './dto/weather-data.dto';
+import { WeatherService } from './weather.service';
 
 @WebSocketGateway()
 export class WeatherGateway {
+  constructor(private readonly weatherService: WeatherService) {}
+
   @SubscribeMessage('weather-data')
   @UsePipes(new ValidationPipe({ transform: true }))
   async onWeatherData(@MessageBody() data: WeatherDataDto) {
-    // TODO: save data to database
-    return null;
+    return await this.weatherService.create(data);
   }
 }
